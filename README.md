@@ -1,23 +1,24 @@
 # Kafka-Learning
 
-Scenario:
-Q-You have a Kafka-based data pipeline where events must be processed exactly once. However, sometimes duplicate messages are processed due to retries.
-How do you ensure idempotency?
+# Scenario:
 
-Solution:
+## Q- You have a Kafka-based data pipeline where events must be processed exactly once. However, sometimes duplicate messages are processed due to retries.
+## How do you ensure idempotency?
+
+Solution:-
+
 Enable idempotent producers:
 
-properties
-Copy
-Edit
+```
 enable.idempotence=true
+```
 This prevents duplicate messages due to retries.
+
 Use transactional producers:
 
-properties
-Copy
-Edit
+```
 transactional.id= "unique-producer-id"
+```
 Ensures all messages within a transaction are either fully committed or fully aborted.
 Deduplicate at the consumer side using unique message keys and a database table/cache (Redis) to track processed messages.
 
