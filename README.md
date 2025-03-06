@@ -175,7 +175,13 @@ No monitoring	Prometheus + Grafana
 
 
 
+### Eureka in Spring Boot – Service Discovery Explained 🚀
+Eureka is a service registry used for service discovery in microservices architecture. It is part of Spring Cloud Netflix and helps microservices dynamically discover each other without requiring hardcoded URLs.
 
+### 🔹 Why Use Eureka?
+In a microservices system, services need to communicate with each other.
+✅ If a service's IP/port changes (due to scaling, crashes, or container restarts), Eureka automatically updates the new service location.
+✅ It eliminates the need for manual configuration of service endpoints.
 
 
 
