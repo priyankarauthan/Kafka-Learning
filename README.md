@@ -1,11 +1,11 @@
 ### Problem Statement:-
-### Suppose our application is facing huge traffic how do we handle this in microservice architecture
+## Suppose our application is facing huge traffic how do we handle this in microservice architecture
 
 ## Handling Huge Traffic in Microservices Architecture 🚀
 
 When a microservices-based application experiences huge traffic, it needs to handle scalability, resilience, and performance efficiently. Below are key strategies to manage high traffic effectively:
 
-# 1️⃣ Scale Horizontally (Auto-Scaling) ⚖️
+### 1️⃣ Scale Horizontally (Auto-Scaling) ⚖️
 
 Instead of running a single instance, deploy multiple instances of each microservice.
 
@@ -35,7 +35,7 @@ maxReplicas: 10 → Can scale up to 10 instances.
 targetAverageUtilization: 50 → Auto-scales when CPU reaches 50%.
 
 
-## 2️⃣ Load Balancing ⚖️
+### 2️⃣ Load Balancing ⚖️
 Distribute incoming traffic across multiple instances using a load balancer.
 Options:
 Nginx or HAProxy (for self-managed deployments)
@@ -56,7 +56,7 @@ server {
         proxy_pass http://backend;
     }
 }
-## 3️⃣ Implement Caching 🗄️
+### 3️⃣ Implement Caching 🗄️
 Reduce load by caching frequently accessed data using Redis, Memcached, or CDN.
 Example: Redis Caching in Spring Boot
 java
@@ -67,7 +67,7 @@ public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFact
     return RedisCacheManager.builder(redisConnectionFactory).build();
 }
 Store read-heavy API responses in cache to reduce database hits.
-## 4️⃣ Use API Gateway for Rate Limiting & Traffic Control 🚦
+### 4️⃣ Use API Gateway for Rate Limiting & Traffic Control 🚦
 API Gateway acts as a single entry point to route requests.
 Apply Rate Limiting, Authentication, Logging at the gateway level.
 Popular API Gateways:
@@ -93,7 +93,7 @@ spring:
                 redis-rate-limiter.burstCapacity: 10
 replenishRate: 5 → Allows 5 requests per second.
 burstCapacity: 10 → Allows a short burst of 10 requests.
-5️⃣ Implement Circuit Breaker & Bulkhead Pattern 🚨
+### 5️⃣ Implement Circuit Breaker & Bulkhead Pattern 🚨
 Prevent cascading failures when one service slows down.
 Use Resilience4j for circuit breaking and bulkhead isolation.
 Example: Circuit Breaker in Spring Boot
@@ -109,7 +109,7 @@ public String callBackendService() {
 public String fallbackMethod(Exception ex) {
     return "Fallback response due to high traffic!";
 }
-6️⃣ Asynchronous Processing & Event-Driven Architecture 📨
+### 6️⃣ Asynchronous Processing & Event-Driven Architecture 📨
 Decouple microservices using Kafka, RabbitMQ, or AWS SQS.
 Slow operations (database writes, external API calls) should be done asynchronously.
 Example: Kafka Event-Driven Communication
@@ -122,7 +122,7 @@ public void processOrder(String message) {
 }
 Producer microservice sends messages to Kafka.
 Consumer microservice processes events asynchronously, reducing API latency.
-7️⃣ Optimize Database Queries & Connection Pooling 🏗️
+### 7️⃣ Optimize Database Queries & Connection Pooling 🏗️
 Reduce DB load using:
 Read Replicas (for read-heavy workloads).
 Connection Pooling (HikariCP in Spring Boot).
@@ -143,7 +143,7 @@ spring:
       max-lifetime: 600000
 maximum-pool-size: 20 → Maximum 20 DB connections.
 Prevents connection exhaustion during high traffic.
-8️⃣ Monitor & Scale Based on Metrics 📊
+### 8️⃣ Monitor & Scale Based on Metrics 📊
 Use Prometheus + Grafana to monitor:
 CPU & Memory Usage
 Request Latency
@@ -176,6 +176,7 @@ No monitoring	Prometheus + Grafana
 
 
 ### Eureka in Spring Boot – Service Discovery Explained 🚀
+
 Eureka is a service registry used for service discovery in microservices architecture. It is part of Spring Cloud Netflix and helps microservices dynamically discover each other without requiring hardcoded URLs.
 
 ### 🔹 Why Use Eureka?
@@ -438,4 +439,80 @@ Kafka broker stores the message in a partition and replicates it if necessary.
 Consumer fetches the message from Kafka.
 Consumer processes the message and commits the offset.
 Kafka ensures fault tolerance and high availability using replication.
+
+
+
+
+
+
+
+## 📌 Role of Zookeeper in Kafka
+
+Zookeeper is responsible for:-
+
+### 1)Broker Management
+
+Keeps track of all active brokers in the Kafka cluster.
+
+Assigns a unique broker ID to each Kafka broker.
+
+Detects when a broker fails and notifies other brokers.
+
+### 2) Leader Election for Partitions
+
+Each Kafka topic is divided into partitions, and one broker is chosen as the leader for each partition.
+
+If the leader broker crashes, Zookeeper elects a new leader automatically.
+
+### 3) Topic and Partition Metadata Storage
+
+Stores metadata about topics, partitions, and replicas.
+Keeps information on which broker is responsible for which partition.
+
+### 4) Consumer Group Management
+
+Tracks consumer groups and offsets (i.e., how much data a consumer has read).
+Ensures fault tolerance by rebalancing consumers when one joins or leaves a group.
+
+### 5) Access Control & Configuration Management
+
+Stores Kafka configurations, ACLs (Access Control Lists), and quotas.
+Ensures only authorized producers and consumers can access Kafka topics.
+
+### 📌 Kafka & Zookeeper Architecture
+pgsql
+
++---------------------------------------------------+
+|                 Zookeeper Cluster                |
+|  +----------------+  +----------------+  +----------------+  |
+|  |  Zookeeper 1   |  |  Zookeeper 2   |  |  Zookeeper 3   |  |
+|  +----------------+  +----------------+  +----------------+  |
+|           |                  |                 |           |
+|  +----------------+  +----------------+  +----------------+  |
+|  |  Kafka Broker 1  |  |  Kafka Broker 2  |  |  Kafka Broker 3  |  |
+|  +----------------+  +----------------+  +----------------+  |
+|  |  Topic-A (P0)  |  |  Topic-A (P1)  |  |  Topic-B (P0)  |  |
+|  +----------------+  +----------------+  +----------------+  |
+|           |                  |                 |           |
+|  +----------------+  +----------------+  +----------------+  |
+|  |  Producer 1    |  |  Producer 2    |  |  Consumer 1    |  |
+|  +----------------+  +----------------+  +----------------+  |
++---------------------------------------------------+
+Kafka producers send messages to Kafka brokers.
+Zookeeper ensures brokers are available, assigns partition leaders, and handles failures.
+Kafka consumers read data from brokers, and Zookeeper keeps track of consumer offsets.
+
+### 📌 How Kafka Uses Zookeeper
+A new Kafka broker starts → Registers itself in Zookeeper.
+
+A new topic is created → Zookeeper stores its metadata (partitions, replicas).
+
+A broker crashes → Zookeeper detects failure and assigns partitions to a new leader.
+
+A consumer joins a group → Zookeeper rebalances partition assignments.
+📌 Do We Still Need Zookeeper?
+Kafka 2.8+ introduced KRaft (Kafka Raft) mode, which removes the need for Zookeeper.
+Kafka 3.x+ can run without Zookeeper, as Kafka now manages metadata internally.
+However, older versions (pre-3.0) still require Zookeeper for cluster management.
+
 
