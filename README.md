@@ -1,7 +1,16 @@
 ### Problem Statement:-
-## Suppose our application is facing huge traffic how do we handle this in microservice architecture
+# Suppose our application is facing huge traffic how do we handle this in microservice architecture
 
-## Handling Huge Traffic in Microservices Architecture 🚀
+# What is an Offset in Kafka?
+
+In Apache Kafka, an offset is a unique identifier assigned to each message within a partition. It helps Kafka track and retrieve messages efficiently.
+
+If a consumer starts reading from offset = 1, it will ignore the first message in each partition.
+
+If a consumer commits offset 2, it means the next read will start from offset = 3.
+
+
+# Handling Huge Traffic in Microservices Architecture 🚀
 
 When a microservices-based application experiences huge traffic, it needs to handle scalability, resilience, and performance efficiently. Below are key strategies to manage high traffic effectively:
 
