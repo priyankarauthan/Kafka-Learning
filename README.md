@@ -1,4 +1,5 @@
 ### Problem Statement:-
+
 ### Suppose our application is facing huge traffic how do we handle this in microservice architecture
 
 ## What is an Offset in Kafka?
@@ -45,6 +46,7 @@ targetAverageUtilization: 50 → Auto-scales when CPU reaches 50%.
 
 
 ### 2️⃣ Load Balancing ⚖️
+
 Distribute incoming traffic across multiple instances using a load balancer.
 Options:
 Nginx or HAProxy (for self-managed deployments)
@@ -52,8 +54,8 @@ AWS Application Load Balancer (ALB), Google Cloud Load Balancer
 Kubernetes Ingress Controller
 Example: Nginx Load Balancer
 nginx
-Copy
-Edit
+
+```
 upstream backend {
     server microservice-1:8080;
     server microservice-2:8080;
@@ -65,18 +67,20 @@ server {
         proxy_pass http://backend;
     }
 }
+```
 ### 3️⃣ Implement Caching 🗄️
 Reduce load by caching frequently accessed data using Redis, Memcached, or CDN.
 Example: Redis Caching in Spring Boot
-java
-Copy
-Edit
+```
 @Bean
 public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
     return RedisCacheManager.builder(redisConnectionFactory).build();
 }
+```
 Store read-heavy API responses in cache to reduce database hits.
+
 ### 4️⃣ Use API Gateway for Rate Limiting & Traffic Control 🚦
+
 API Gateway acts as a single entry point to route requests.
 Apply Rate Limiting, Authentication, Logging at the gateway level.
 Popular API Gateways:
@@ -85,8 +89,8 @@ Kong API Gateway
 AWS API Gateway
 Example: Rate Limiting in Spring Cloud Gateway
 yaml
-Copy
-Edit
+
+```
 spring:
   cloud:
     gateway:
@@ -102,13 +106,14 @@ spring:
                 redis-rate-limiter.burstCapacity: 10
 replenishRate: 5 → Allows 5 requests per second.
 burstCapacity: 10 → Allows a short burst of 10 requests.
+```
+
 ### 5️⃣ Implement Circuit Breaker & Bulkhead Pattern 🚨
+
 Prevent cascading failures when one service slows down.
 Use Resilience4j for circuit breaking and bulkhead isolation.
 Example: Circuit Breaker in Spring Boot
-java
-Copy
-Edit
+```
 @CircuitBreaker(name = "backendService", fallbackMethod = "fallbackMethod")
 public String callBackendService() {
     // Call another microservice
@@ -118,28 +123,29 @@ public String callBackendService() {
 public String fallbackMethod(Exception ex) {
     return "Fallback response due to high traffic!";
 }
+```
 ### 6️⃣ Asynchronous Processing & Event-Driven Architecture 📨
 Decouple microservices using Kafka, RabbitMQ, or AWS SQS.
 Slow operations (database writes, external API calls) should be done asynchronously.
 Example: Kafka Event-Driven Communication
-java
-Copy
-Edit
+```
 @KafkaListener(topics = "order-events", groupId = "order-group")
 public void processOrder(String message) {
     System.out.println("Processing order: " + message);
 }
+```
+
 Producer microservice sends messages to Kafka.
 Consumer microservice processes events asynchronously, reducing API latency.
+
 ### 7️⃣ Optimize Database Queries & Connection Pooling 🏗️
+
 Reduce DB load using:
 Read Replicas (for read-heavy workloads).
 Connection Pooling (HikariCP in Spring Boot).
 Query Optimization (Use Indexes, avoid SELECT *).
 Example: Connection Pooling with HikariCP
-yaml
-Copy
-Edit
+```
 spring:
   datasource:
     url: jdbc:mysql://db-host:3306/mydb
@@ -151,17 +157,18 @@ spring:
       idle-timeout: 30000
       max-lifetime: 600000
 maximum-pool-size: 20 → Maximum 20 DB connections.
+```
 Prevents connection exhaustion during high traffic.
+
 ### 8️⃣ Monitor & Scale Based on Metrics 📊
+
 Use Prometheus + Grafana to monitor:
 CPU & Memory Usage
 Request Latency
 Database Connections
 Kafka Queue Size
 Example: Expose Metrics with Spring Boot Actuator
-yaml
-Copy
-Edit
+```
 management:
   endpoints:
     web:
@@ -169,15 +176,24 @@ management:
         include: "metrics,health,prometheus"
 Monitor http_server_requests_seconds_count for API traffic.
 Trigger auto-scaling based on high request count.
+```
+
 🚀 TL;DR: Summary
-Problem	Solution
+### Problem	Solution
 Huge traffic	Horizontal Scaling (Auto-scaling in K8s)
+
 Request overload	Load Balancing (Nginx, API Gateway)
+
 Slow response times	Caching (Redis, CDN)
+
 Service failures	Circuit Breaker (Resilience4j)
+
 Synchronous blocking	Asynchronous Processing (Kafka, RabbitMQ)
+
 High DB load	Read Replicas, Connection Pooling
+
 No traffic control	Rate Limiting (Spring Cloud Gateway)
+
 No monitoring	Prometheus + Grafana
 
 
@@ -396,6 +412,7 @@ Kafka follows a publish-subscribe model, where producers send messages to Kafka 
 
 Step-by-Step Flow
 ### 1. Producer Sends Message
+
 A producer creates a message and sends it to a Kafka topic.
 The producer uses a partitioning strategy to determine which partition the message should go to.
 Messages are sent to the Kafka broker (leader partition) for storage.
