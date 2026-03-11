@@ -1,4 +1,166 @@
-### Problem Statement:-
+## Problem Without Kafka
+
+1️⃣ Tight Coupling Between Services
+
+Without Kafka, microservices usually communicate directly using REST APIs.
+
+Example:
+
+Order Service → Payment Service → Inventory Service
+
+Problem:
+
+Services are tightly coupled
+
+If Payment Service is down, Order Service fails
+
+Example:
+```
+Order placed
+     ↓
+Payment API fails ❌
+     ↓
+Order processing fails
+```
+2️⃣ No Asynchronous Communication
+
+Without Kafka, systems often rely on synchronous calls.
+
+Example:
+```
+Client
+   ↓
+Order Service
+   ↓
+Payment Service
+   ↓
+Inventory Service
+```
+
+Problem:
+
+Each service waits for the other
+
+Slow response
+
+Higher latency
+
+3️⃣ Poor Scalability
+
+Suppose many services need order events.
+
+Without Kafka:
+
+Order Service → Email Service
+Order Service → Inventory Service
+Order Service → Analytics Service
+Order Service → Notification Service
+
+Order service must call every service individually.
+
+Problems:
+
+Hard to scale
+
+Complex code
+
+High load on Order Service
+
+4️⃣ Data Loss Risk
+
+Without a message broker:
+
+Example:
+
+Order Service → Payment Service
+
+If Payment Service crashes:
+
+Message lost ❌
+
+The order might remain inconsistent.
+
+Kafka solves this by persisting messages in logs.
+
+5️⃣ Difficult Event Processing
+
+Many modern systems are event-driven.
+
+Example events:
+
+Order Created
+Payment Completed
+Shipment Started
+
+Without Kafka:
+
+Hard to manage event streams
+
+No central event log
+
+Difficult to replay events
+
+Kafka provides event streaming platform.
+
+6️⃣ No Decoupling
+
+Without Kafka:
+
+Order Service → Payment Service
+
+Services depend directly on each other.
+
+With Kafka:
+
+Order Service → Kafka Topic → Payment Service
+
+Services become loosely coupled.
+
+7️⃣ No Message Buffering
+
+Imagine sudden traffic spike:
+
+10,000 orders per second
+
+Without Kafka:
+
+Payment service may crash
+
+Kafka acts as a buffer.
+
+Architecture:
+
+Order Service
+      ↓
+Kafka Topic
+      ↓
+Payment Service (consume when ready)
+8️⃣ Real Example
+
+Without Kafka:
+
+Order Service
+   ↓
+Payment Service
+   ↓
+Email Service
+   ↓
+Inventory Service
+
+If one service fails → entire chain fails.
+
+With Kafka:
+
+Order Service
+     ↓
+Kafka Topic
+     ↓
+Payment Service
+Email Service
+Inventory Service
+Analytics Service
+
+Each service consumes independently.
 
 ### Suppose our application is facing huge traffic how do we handle this in microservice architecture
 
